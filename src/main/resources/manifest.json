@@ -1,0 +1,20 @@
+{
+    "Group": "Alexandre",
+    "Name": "Trigger Volumes Extended",
+    "Version": "1.0.0",
+    "Description": "Extends Trigger Volumes with new features.",
+    "Authors": [
+        {
+            "Name": "Alexandre",
+            "Email": "contact@alexandre.gg",
+            "Url": "https://github.com/Alexandre-slw"
+        }
+    ],
+    "Website": "https://alexandre.gg",
+    "DisabledByDefault": false,
+    "IncludesAssetPack": true,
+    "Dependencies": {},
+    "OptionalDependencies": {},
+    "ServerVersion": ">=0.5.0-pre.8",
+    "Main": "gg.alexandre.extended.TriggerExtendedPlugin"
+}
