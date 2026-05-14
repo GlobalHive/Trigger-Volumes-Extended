@@ -1,6 +1,6 @@
 import dev.scaffoldit.hytale.Patchline
 
-rootProject.name = "trigger-camera-extended"
+rootProject.name = "trigger-volumes-extended"
 
 plugins {
     id("dev.scaffoldit") version "0.2.+"
