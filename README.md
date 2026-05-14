@@ -1,3 +1,3 @@
-# Trigger Volumes Camera for Hytale
+# Trigger Volumes extension for Hytale
 
-A plugin for Hytale that adds Camera effect to Trigger Volumes.
+A plugin for Hytale that adds new features to Trigger Volumes.
