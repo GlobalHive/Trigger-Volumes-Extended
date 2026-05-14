@@ -15,6 +15,9 @@ public class TriggerExtendedPlugin extends JavaPlugin {
     @Override
     protected void setup() {
         TriggerVolumesPlugin.get().registerEffectType("Command", CommandEffect.class, CommandEffect.CODEC);
+        TriggerVolumesPlugin.get().registerEffectType(
+                "DestroyOtherVolume", DestroyOtherVolumeEffect.class, DestroyOtherVolumeEffect.CODEC
+        );
     }
 
 }

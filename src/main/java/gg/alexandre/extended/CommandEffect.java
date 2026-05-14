@@ -39,12 +39,17 @@ public class CommandEffect extends TriggerEffect {
     private String command = "";
 
     public void execute(@Nonnull TriggerContext context) {
+        String commandLine = command.strip();
+        if (commandLine.isBlank()) {
+            return;
+        }
+
         Ref<EntityStore> entityRef = context.getEntityRef();
         Store<EntityStore> store = context.getStore();
 
         PlayerRef playerRef = store.getComponent(entityRef, PlayerRef.getComponentType());
         if (playerRef != null) {
-            String commandLine = command.startsWith("/") ? command.substring(1) : command;
+            commandLine = commandLine.startsWith("/") ? commandLine.substring(1) : commandLine;
             commandLine = PLAYER_NAME_PATTERN.matcher(commandLine).replaceAll(playerRef.getUsername());
 
             CommandManager.get().handleCommand(
