@@ -16,6 +16,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import gg.alexandre.extended.effects.PressInteractionEffect;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -47,6 +48,13 @@ public final class VolumeInteractionRunner {
     private static void fireEffects(@Nonnull TriggerEventType eventType, @Nonnull Ref<EntityStore> entityRef,
                                     @Nonnull UUID entityUuid, @Nonnull VolumeEntry volume,
                                     @Nonnull Store<EntityStore> store, long nowNanos) {
+        fireVolumeEffects(eventType, entityRef, entityUuid, volume, store, nowNanos, null);
+    }
+
+    private static void fireVolumeEffects(@Nonnull TriggerEventType eventType, @Nonnull Ref<EntityStore> entityRef,
+                                          @Nonnull UUID entityUuid, @Nonnull VolumeEntry volume,
+                                          @Nonnull Store<EntityStore> store, long nowNanos,
+                                          @Nullable List<VolumeEntry> spatialVolumes) {
         List<TriggerEffect> effects = volume.getEffects();
         for (int i = 0; i < effects.size(); i++) {
             TriggerEffect effect = effects.get(i);
@@ -65,7 +73,15 @@ public final class VolumeInteractionRunner {
 
             float totalDelay = volume.getActivationDelay() + effect.getDelay();
             if (totalDelay > 0.0f) {
-                DELAYED_EFFECT_SCHEDULER.schedule(effect, entityRef, entityUuid, eventType, volume, nowNanos, totalDelay);
+                if (spatialVolumes == null) {
+                    DELAYED_EFFECT_SCHEDULER.schedule(
+                            effect, entityRef, entityUuid, eventType, volume, nowNanos, totalDelay
+                    );
+                } else {
+                    DELAYED_EFFECT_SCHEDULER.schedule(
+                            effect, entityRef, entityUuid, eventType, volume, nowNanos, totalDelay, spatialVolumes
+                    );
+                }
                 if (intervalKey != null) {
                     volume.getLastFireTimes().put(intervalKey, nowNanos);
                 }
@@ -73,7 +89,10 @@ public final class VolumeInteractionRunner {
             }
 
             try {
-                effect.execute(new TriggerContext(entityRef, store, eventType, volume));
+                TriggerContext context = spatialVolumes == null
+                        ? new TriggerContext(entityRef, store, eventType, volume)
+                        : new TriggerContext(entityRef, store, eventType, volume, spatialVolumes);
+                effect.execute(context);
                 if (intervalKey != null) {
                     volume.getLastFireTimes().put(intervalKey, nowNanos);
                 }
@@ -96,7 +115,7 @@ public final class VolumeInteractionRunner {
         }
 
         GroupEntry group = manager.getGroup(volume.getGroupId());
-        if (group == null || !group.isEnabled() || group.getEffects().isEmpty()) {
+        if (group == null || !group.isEnabled()) {
             return;
         }
 
@@ -161,6 +180,18 @@ public final class VolumeInteractionRunner {
                 );
             }
         }
+
+        for (VolumeEntry member : spatialVolumes) {
+            if (!shouldFireMemberVolume(volume, member)) {
+                continue;
+            }
+
+            fireVolumeEffects(eventType, entityRef, entityUuid, member, store, nowNanos, spatialVolumes);
+        }
+    }
+
+    private static boolean shouldFireMemberVolume(@Nonnull VolumeEntry source, @Nonnull VolumeEntry member) {
+        return !source.getId().equals(member.getId()) && member.isEnabled() && !member.isPendingDestroy();
     }
 
 }
