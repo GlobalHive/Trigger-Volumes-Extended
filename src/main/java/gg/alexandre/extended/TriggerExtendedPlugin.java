@@ -13,9 +13,12 @@ import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Roo
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import gg.alexandre.extended.commands.RunTriggerVolumeCommand;
+import gg.alexandre.extended.display.ShapeColorDisplayResource;
+import gg.alexandre.extended.display.ShapeColorDisplaySystem;
 import gg.alexandre.extended.effects.CommandEffect;
 import gg.alexandre.extended.effects.DestroyOtherVolumeEffect;
 import gg.alexandre.extended.effects.PressInteractionEffect;
+import gg.alexandre.extended.effects.ShapeColorEffect;
 import gg.alexandre.extended.interact.VolumeInteraction;
 import gg.alexandre.extended.interact.VolumeInteractionCleanupSystem;
 import gg.alexandre.extended.interact.VolumeInteractionComponent;
@@ -73,6 +76,9 @@ public class TriggerExtendedPlugin extends JavaPlugin {
         TriggerVolumesPlugin.get().registerEffectType(
                 "PressInteraction", PressInteractionEffect.class, PressInteractionEffect.CODEC
         );
+        TriggerVolumesPlugin.get().registerEffectType(
+                "ShapeColor", ShapeColorEffect.class, ShapeColorEffect.CODEC
+        );
     }
 
     private void setupInteraction() {
@@ -100,6 +106,12 @@ public class TriggerExtendedPlugin extends JavaPlugin {
         );
         this.getEntityStoreRegistry().registerSystem(new VolumeInteractionCleanupSystem());
         this.getEntityStoreRegistry().registerSystem(new VolumeInteractionSystem());
+        ShapeColorDisplayResource.setResourceType(
+                this.getEntityStoreRegistry().registerResource(
+                        ShapeColorDisplayResource.class, ShapeColorDisplayResource::new
+                )
+        );
+        this.getEntityStoreRegistry().registerSystem(new ShapeColorDisplaySystem());
     }
 
     @Nonnull

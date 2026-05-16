@@ -38,6 +38,7 @@ public class CommandEffect extends TriggerEffect {
     private boolean executeAsPlayer = false;
     private String command = "";
 
+    @Override
     public void execute(@Nonnull TriggerContext context) {
         String commandLine = command.strip();
         if (commandLine.isBlank()) {

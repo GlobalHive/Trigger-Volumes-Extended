@@ -67,11 +67,8 @@ public class VolumeInteractionSystem extends TickingSystem<EntityStore> {
         return null;
     }
 
-    private static void removeIfPresent(
-            @Nonnull Store<EntityStore> store,
-            @Nonnull VolumeInteractionResource resource,
-            @Nonnull String volumeId
-    ) {
+    private static void removeIfPresent(@Nonnull Store<EntityStore> store, @Nonnull VolumeInteractionResource resource,
+                                        @Nonnull String volumeId) {
         Ref<EntityStore> existing = resource.get(volumeId);
         if (existing != null) {
             store.removeEntity(existing, RemoveReason.REMOVE);
@@ -79,12 +76,8 @@ public class VolumeInteractionSystem extends TickingSystem<EntityStore> {
         resource.remove(volumeId);
     }
 
-    private static void sync(
-            @Nonnull Store<EntityStore> store,
-            @Nonnull VolumeInteractionResource resource,
-            @Nonnull VolumeEntry volume,
-            @Nonnull PressInteractionEffect effect
-    ) {
+    private static void sync(@Nonnull Store<EntityStore> store, @Nonnull VolumeInteractionResource resource,
+                             @Nonnull VolumeEntry volume, @Nonnull PressInteractionEffect effect) {
         Ref<EntityStore> existing = resource.get(volume.getId());
         InteractionGeometry geometry = InteractionGeometry.from(volume, effect.getHitboxPadding());
 
@@ -111,13 +104,9 @@ public class VolumeInteractionSystem extends TickingSystem<EntityStore> {
         putComponents(store, existing, volume, effect, geometry);
     }
 
-    private static void create(
-            @Nonnull Store<EntityStore> store,
-            @Nonnull VolumeInteractionResource resource,
-            @Nonnull VolumeEntry volume,
-            @Nonnull PressInteractionEffect effect,
-            @Nonnull InteractionGeometry geometry
-    ) {
+    private static void create(@Nonnull Store<EntityStore> store, @Nonnull VolumeInteractionResource resource,
+                               @Nonnull VolumeEntry volume, @Nonnull PressInteractionEffect effect,
+                               @Nonnull InteractionGeometry geometry) {
         Holder<EntityStore> holder = EntityStore.REGISTRY.newHolder();
         addComponents(holder, store, volume, effect, geometry);
         Ref<EntityStore> created = store.addEntity(holder, AddReason.SPAWN);
@@ -128,12 +117,8 @@ public class VolumeInteractionSystem extends TickingSystem<EntityStore> {
         }
     }
 
-    private static boolean needsRecreate(
-            @Nonnull Store<EntityStore> store,
-            @Nonnull Ref<EntityStore> ref,
-            @Nonnull VolumeEntry volume,
-            @Nonnull PressInteractionEffect effect
-    ) {
+    private static boolean needsRecreate(@Nonnull Store<EntityStore> store, @Nonnull Ref<EntityStore> ref,
+                                         @Nonnull VolumeEntry volume, @Nonnull PressInteractionEffect effect) {
         VolumeInteractionComponent component = store.getComponent(ref, VolumeInteractionComponent.getComponentType());
         return component == null
                 || !volume.getId().equals(component.getVolumeId())
@@ -141,12 +126,8 @@ public class VolumeInteractionSystem extends TickingSystem<EntityStore> {
                 || effect.shouldIncludeGroupEffects() != component.shouldIncludeGroupEffects();
     }
 
-    private static boolean needsUpdate(
-            @Nonnull Store<EntityStore> store,
-            @Nonnull Ref<EntityStore> ref,
-            @Nonnull PressInteractionEffect effect,
-            @Nonnull InteractionGeometry geometry
-    ) {
+    private static boolean needsUpdate(@Nonnull Store<EntityStore> store, @Nonnull Ref<EntityStore> ref,
+                                       @Nonnull PressInteractionEffect effect, @Nonnull InteractionGeometry geometry) {
         TransformComponent transform = store.getComponent(ref, TransformComponent.getComponentType());
         if (transform == null || !sameVector(transform.getPosition(), geometry.center)) {
             return true;
@@ -235,10 +216,7 @@ public class VolumeInteractionSystem extends TickingSystem<EntityStore> {
         );
     }
 
-    private static boolean isChunkTicking(
-            @Nonnull Store<EntityStore> store,
-            @Nonnull Vector3dc position
-    ) {
+    private static boolean isChunkTicking(@Nonnull Store<EntityStore> store, @Nonnull Vector3dc position) {
         EntityStore entityStore = store.getExternalData();
 
         ChunkStore chunkStore = entityStore.getWorld().getChunkStore();
