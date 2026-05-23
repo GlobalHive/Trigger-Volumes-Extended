@@ -64,7 +64,7 @@ public final class VolumeInteractionRunner {
 
             VolumeEntry.EffectEntityKey intervalKey = null;
             if (eventType == TriggerEventType.TICK && effect.getInterval() > 0.0f) {
-                intervalKey = new VolumeEntry.EffectEntityKey(i, entityUuid);
+                intervalKey = new VolumeEntry.EffectEntityKey(VolumeEntry.EffectBucket.VOLUME, i, entityUuid);
                 Long lastFire = volume.getLastFireTimes().get(intervalKey);
                 if (lastFire != null && ((double) (nowNanos - lastFire) / 1.0E9) < effect.getInterval()) {
                     continue;
@@ -148,7 +148,7 @@ public final class VolumeInteractionRunner {
 
             VolumeEntry.EffectEntityKey intervalKey = null;
             if (eventType == TriggerEventType.TICK && effect.getInterval() > 0.0f) {
-                intervalKey = new VolumeEntry.EffectEntityKey(-(i + 1), entityUuid);
+                intervalKey = new VolumeEntry.EffectEntityKey(VolumeEntry.EffectBucket.GROUP, -(i + 1), entityUuid);
                 Long lastFire = volume.getLastFireTimes().get(intervalKey);
                 if (lastFire != null && ((double) (nowNanos - lastFire) / 1.0E9) < effect.getInterval()) {
                     continue;
