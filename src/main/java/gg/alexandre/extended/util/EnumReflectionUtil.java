@@ -25,20 +25,7 @@ public class EnumReflectionUtil {
 
     public static void addTriggerEvent(@Nonnull Unsafe unsafe, @Nonnull String name)
             throws ReflectiveOperationException {
-        for (TriggerEventType eventType : TriggerEventType.values()) {
-            if (eventType.name().equals(name)) {
-                return;
-            }
-        }
-
-        TriggerEventType[] values = TriggerEventType.values();
-        TriggerEventType added = newTriggerEvent(unsafe, name, values.length);
-        TriggerEventType[] updatedValues = Arrays.copyOf(values, values.length + 1);
-        updatedValues[values.length] = added;
-
-        Field valuesField = findEnumValuesField(TriggerEventType.class);
-        unsafe.putObject(unsafe.staticFieldBase(valuesField), unsafe.staticFieldOffset(valuesField), updatedValues);
-        clearEnumCache(unsafe, TriggerEventType.class);
+        TriggerEventType.register(name);
     }
 
     @Nonnull
@@ -116,7 +103,7 @@ public class EnumReflectionUtil {
             return;
         }
 
-        TriggerEventType[] values = TriggerEventType.values();
+        List<TriggerEventType> values = TriggerEventType.values();
 
         Field enumConstantsField = EnumCodec.class.getDeclaredField("enumConstants");
         unsafe.putObject(codec, unsafe.objectFieldOffset(enumConstantsField), values);
@@ -125,15 +112,14 @@ public class EnumReflectionUtil {
         unsafe.putObject(codec, unsafe.objectFieldOffset(enumKeysField), triggerEventKeys(values));
 
         Field documentationField = EnumCodec.class.getDeclaredField("documentation");
-        EnumMap<TriggerEventType, String> documentation = new EnumMap<>(TriggerEventType.class);
-        unsafe.putObject(codec, unsafe.objectFieldOffset(documentationField), documentation);
+        unsafe.putObject(codec, unsafe.objectFieldOffset(documentationField), null);
     }
 
     @Nonnull
-    private static String[] triggerEventKeys(@Nonnull TriggerEventType[] values) {
-        String[] keys = new String[values.length];
-        for (int i = 0; i < values.length; i++) {
-            keys[i] = values[i].name();
+    private static String[] triggerEventKeys(@Nonnull List<TriggerEventType> values) {
+        String[] keys = new String[values.size()];
+        for (int i = 0; i < values.size(); i++) {
+            keys[i] = values.get(i).name();
         }
         return keys;
     }

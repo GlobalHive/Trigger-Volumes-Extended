@@ -21,6 +21,8 @@ import gg.alexandre.extended.interact.VolumeInteractionRunner;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import java.util.List;
 import java.util.Locale;
 
 public class RunTriggerVolumeCommand extends AbstractPlayerCommand {
@@ -95,10 +97,10 @@ public class RunTriggerVolumeCommand extends AbstractPlayerCommand {
 
     @Nonnull
     private static String[] eventNames() {
-        TriggerEventType[] values = TriggerEventType.values();
-        String[] names = new String[values.length];
-        for (int i = 0; i < values.length; i++) {
-            names[i] = values[i].name().toLowerCase(Locale.ROOT);
+        List<TriggerEventType> values = TriggerEventType.values();
+        String[] names = new String[values.size()];
+        for (int i = 0; i < values.size(); i++) {
+            names[i] = values.get(i).name().toLowerCase(Locale.ROOT);
         }
         return names;
     }

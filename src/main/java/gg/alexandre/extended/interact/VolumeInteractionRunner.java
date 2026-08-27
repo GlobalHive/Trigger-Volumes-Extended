@@ -94,11 +94,13 @@ public final class VolumeInteractionRunner {
                 DelayedEffectScheduler scheduler = getDelayedScheduler(store);
                 if (spatialVolumes == null) {
                     scheduler.schedule(
-                            effect, entityRef, entityUuid, eventType, volume, nowNanos, totalDelay
+                            effect, entityRef, entityUuid, eventType, volume, nowNanos, totalDelay,
+                            Collections.emptyList(), null, store, null
                     );
                 } else {
                     scheduler.schedule(
-                            effect, entityRef, entityUuid, eventType, volume, nowNanos, totalDelay, spatialVolumes
+                            effect, entityRef, entityUuid, eventType, volume, nowNanos, totalDelay,
+                            spatialVolumes, null, store, null
                     );
                 }
                 if (intervalKey != null) {
@@ -182,7 +184,8 @@ public final class VolumeInteractionRunner {
             float totalDelay = volume.getActivationDelay() + effect.getDelay();
             if (totalDelay > 0.0f) {
                 getDelayedScheduler(store).schedule(
-                        effect, entityRef, entityUuid, eventType, volume, nowNanos, totalDelay, spatialVolumes
+                    effect, entityRef, entityUuid, eventType, volume, nowNanos, totalDelay,
+                    spatialVolumes, null, store, null
                 );
                 if (intervalKey != null) {
                     volume.getLastFireTimes().put(intervalKey, nowNanos);
